@@ -1,0 +1,10 @@
+^E:\RESTAURANT-ORDER-SYSTEM\BACKEND\BUILD\CMAKEFILES\4DBC2A5598F8E2078C14834474C80582\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SE:/restaurant-order-system/backend -BE:/restaurant-order-system/backend/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file E:/restaurant-order-system/backend/build/restaurant_backend.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

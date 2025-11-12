@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}订单状态{% endblock %}
+{% block content %}
+<h2>订单 #{{ order.id }}</h2>
+<p>状态：{{ order.status }}</p>
+<p>总计：¥ {{ "%.2f"|format(order.total) }}</p>
+<h3>菜品</h3>
+<table>
+	<thead>
+	<tr>
+		<th>菜品</th>
+		<th>数量</th>
+		<th>单价</th>
+		<th>小计</th>
+	</tr>
+	</thead>
+	<tbody>
+	{% for it in order_items %}
+	<tr>
+		<td>{{ it.name }}</td>
+		<td>{{ it.quantity }}</td>
+		<td>
+			{% if it.price is not none %}
+			¥ {{ "%.2f"|format(it.price) }}
+			{% else %}
+			--
+			{% endif %}
+		</td>
+		<td>
+			{% if it.subtotal is not none %}
+			¥ {{ "%.2f"|format(it.subtotal) }}
+			{% else %}
+			--
+			{% endif %}
+		</td>
+	</tr>
+	{% endfor %}
+	</tbody>
+</table>
+<a href="{{ url_for('menu.menu_page') }}">返回菜单</a>
+{% endblock %}
+
+

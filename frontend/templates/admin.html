@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}商家后台 - 订单管理{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+	<h2>订单管理</h2>
+	
+	<div class="status-tabs">
+		<button class="tab-btn active" onclick="showStatus('all')">全部</button>
+		<button class="tab-btn" onclick="showStatus('pending')">待处理</button>
+		<button class="tab-btn" onclick="showStatus('preparing')">制作中</button>
+		<button class="tab-btn" onclick="showStatus('ready')">待取餐</button>
+		<button class="tab-btn" onclick="showStatus('completed')">已完成</button>
+	</div>
+
+	<div id="orders-container">
+		{% for status in ['pending', 'preparing', 'ready', 'completed'] %}
+		{% set orders = orders_by_status.get(status, []) %}
+		<div class="status-section" data-status="{{ status }}">
+			{% if orders %}
+			<h3 class="status-header">
+				{% if status == 'pending' %}待处理订单
+				{% elif status == 'preparing' %}制作中订单
+				{% elif status == 'ready' %}待取餐订单
+				{% elif status == 'completed' %}已完成订单
+				{% else %}{{ status }}{% endif %}
+				<span class="count">({{ orders|length }})</span>
+			</h3>
+			
+			<div class="orders-grid">
+				{% for order in orders %}
+				<div class="order-card">
+					<div class="order-header">
+						<h4>订单 #{{ order.get("id", 0) }}</h4>
+						<span class="order-status status-{{ order.get('status', 'pending') }}">{{ order.get("status", "pending") }}</span>
+					</div>
+					
+					<div class="order-items">
+						<h5>菜品：</h5>
+						<ul>
+							{% for item in order.get("items", []) %}
+							<li>
+								{{ item.get("dishName") or ('菜品 #' + item.get("dishId", 0)|string) }} 
+								× {{ item.get("quantity", 0) }}
+								{% if item.get("dishPrice") %}
+								<span class="item-price">¥{{ "%.2f"|format(item.get("dishPrice", 0) * item.get("quantity", 0)) }}</span>
+								{% endif %}
+							</li>
+							{% endfor %}
+						</ul>
+					</div>
+					
+					<div class="order-footer">
+						<div class="order-total">总计: ¥{{ "%.2f"|format(order.get("total", 0)) }}</div>
+						<div class="order-actions">
+							{% if order.get("status") == 'pending' %}
+							<form method="POST" action="{{ url_for('admin.update_status', order_id=order.get('id')) }}" style="display:inline;">
+								<button type="submit" name="status" value="preparing" class="btn btn-primary">开始制作</button>
+							</form>
+							{% elif order.get("status") == 'preparing' %}
+							<form method="POST" action="{{ url_for('admin.update_status', order_id=order.get('id')) }}" style="display:inline;">
+								<button type="submit" name="status" value="ready" class="btn btn-success">制作完成</button>
+							</form>
+							{% elif order.get("status") == 'ready' %}
+							<form method="POST" action="{{ url_for('admin.update_status', order_id=order.get('id')) }}" style="display:inline;">
+								<button type="submit" name="status" value="completed" class="btn btn-success">完成订单</button>
+							</form>
+							{% endif %}
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+			{% endif %}
+		</div>
+		{% endfor %}
+	</div>
+	
+	{% if not all_orders %}
+	<div class="empty-state">
+		<p>暂无订单</p>
+		<p style="margin-top: 16px; color: #666; font-size: 14px;">
+			提示：请先在客户端下单，然后刷新此页面查看订单
+		</p>
+	</div>
+	{% endif %}
+</div>
+
+<script>
+function showStatus(status) {
+	// Update tab buttons
+	document.querySelectorAll('.tab-btn').forEach((btn, index) => {
+		btn.classList.remove('active');
+		if ((status === 'all' && index === 0) ||
+			(status === 'pending' && index === 1) ||
+			(status === 'preparing' && index === 2) ||
+			(status === 'ready' && index === 3) ||
+			(status === 'completed' && index === 4)) {
+			btn.classList.add('active');
+		}
+	});
+	
+	// Show/hide status sections
+	document.querySelectorAll('.status-section').forEach(section => {
+		if (status === 'all' || section.dataset.status === status) {
+			section.style.display = 'block';
+		} else {
+			section.style.display = 'none';
+		}
+	});
+}
+
+// Auto-refresh every 10 seconds
+setInterval(() => {
+	location.reload();
+}, 10000);
+</script>
+{% endblock %}
+

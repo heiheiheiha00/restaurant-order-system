@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="E:\restaurant-order-system\backend\build\CMakeFiles\4dbc2a5598f8e2078c14834474c80582\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{00AA856F-1360-3AA4-96B1-09400FFC2413}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

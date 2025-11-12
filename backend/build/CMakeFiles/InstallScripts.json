@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"E:/restaurant-order-system/backend/build/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

@@ -1,0 +1,8 @@
+E:\restaurant-order-system\backend\main.cpp;E:\restaurant-order-system\backend\build\restaurant_backend.dir\Release\main.obj
+E:\restaurant-order-system\backend\config.cpp;E:\restaurant-order-system\backend\build\restaurant_backend.dir\Release\config.obj
+E:\restaurant-order-system\backend\database\Database.cpp;E:\restaurant-order-system\backend\build\restaurant_backend.dir\Release\Database.obj
+E:\restaurant-order-system\backend\services\MenuService.cpp;E:\restaurant-order-system\backend\build\restaurant_backend.dir\Release\MenuService.obj
+E:\restaurant-order-system\backend\services\OrderService.cpp;E:\restaurant-order-system\backend\build\restaurant_backend.dir\Release\OrderService.obj
+E:\restaurant-order-system\backend\controllers\MenuController.cpp;E:\restaurant-order-system\backend\build\restaurant_backend.dir\Release\MenuController.obj
+E:\restaurant-order-system\backend\controllers\OrderController.cpp;E:\restaurant-order-system\backend\build\restaurant_backend.dir\Release\OrderController.obj
+E:\restaurant-order-system\backend\controllers\AdminController.cpp;E:\restaurant-order-system\backend\build\restaurant_backend.dir\Release\AdminController.obj

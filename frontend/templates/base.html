@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{% block title %}餐厅点餐系统{% endblock %}</title>
+	<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+	<header>
+		<h1>餐厅点餐系统</h1>
+		<nav>
+			<a href="{{ url_for('menu.menu_page') }}">菜单</a>
+			<a href="{{ url_for('cart.view_cart') }}">购物车{% if cart_count %} ({{ cart_count }}){% endif %}</a>
+			<a href="{{ url_for('admin.orders_list') }}">商家后台</a>
+		</nav>
+	</header>
+	<main>
+		{% with messages = get_flashed_messages(with_categories=true) %}
+		{% if messages %}
+		<ul class="flash-messages">
+			{% for category, message in messages %}
+			<li class="flash-{{ category }}">{{ message }}</li>
+			{% endfor %}
+		</ul>
+		{% endif %}
+		{% endwith %}
+		{% block content %}{% endblock %}
+	</main>
+</body>
+</html>
+
+
