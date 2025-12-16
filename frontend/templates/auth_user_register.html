@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}用户注册{% endblock %}
+{% block content %}
+<div class="auth-card">
+	<h2>创建用户账号</h2>
+	<form method="post" class="form-vertical">
+		{% if next_url %}<input type="hidden" name="next" value="{{ next_url }}">{% endif %}
+		<label>账号（8位字母+数字）
+			<input type="text" name="username" value="{{ username or '' }}" maxlength="8" required>
+		</label>
+		<label>密码
+			<input type="password" name="password" required minlength="6">
+		</label>
+		<label>手机号（可选）
+			<input type="text" name="phone" value="{{ phone or '' }}">
+		</label>
+		<button type="submit" class="btn btn-primary">注册</button>
+	</form>
+	<p>已经有账号？<a href="{{ url_for('auth.user_login_view', next=next_url) }}">返回登录</a></p>
+</div>
+{% endblock %}
+

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{% block title %}商家后台{% endblock %}</title>
+	<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+	<header>
+		<h1>商家管理后台</h1>
+		<nav>
+			<a href="{{ url_for('admin.orders_list') }}">订单看板</a>
+			<a href="{{ url_for('admin.menu_manage') }}">菜单管理</a>
+			{% if current_merchant %}
+			<span class="nav-user">欢迎，{{ current_merchant.username }}</span>
+			<a href="{{ url_for('auth.merchant_logout') }}">退出登录</a>
+			{% else %}
+			<a href="{{ url_for('auth.merchant_login_view') }}">商家登录</a>
+			<a href="{{ url_for('auth.merchant_register_view') }}">注册</a>
+			{% endif %}
+		</nav>
+	</header>
+	<main>
+		{% with messages = get_flashed_messages(with_categories=true) %}
+		{% if messages %}
+		<ul class="flash-messages">
+			{% for category, message in messages %}
+			<li class="flash-{{ category }}">{{ message }}</li>
+			{% endfor %}
+		</ul>
+		{% endif %}
+		{% endwith %}
+		{% block content %}{% endblock %}
+	</main>
+</body>
+</html>
+

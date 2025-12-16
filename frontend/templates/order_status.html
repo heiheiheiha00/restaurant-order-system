@@ -2,8 +2,15 @@
 {% block title %}订单状态{% endblock %}
 {% block content %}
 <h2>订单 #{{ order.id }}</h2>
-<p>状态：{{ order.status }}</p>
+<p>状态：<span class="order-status status-{{ order.status }}">{{ order.status }}</span></p>
 <p>总计：¥ {{ "%.2f"|format(order.total) }}</p>
+{% if pickup_ready %}
+<form method="post" action="{{ url_for('auth.ack_pickup', order_id=order.id) }}">
+	<button type="submit" class="btn btn-success">我已收到取餐提醒</button>
+</form>
+{% elif order.status == 'completed' %}
+<p><span class="badge badge-success">订单已完成</span></p>
+{% endif %}
 <h3>菜品</h3>
 <table>
 	<thead>
@@ -37,7 +44,7 @@
 	{% endfor %}
 	</tbody>
 </table>
-<a href="{{ url_for('menu.menu_page') }}">返回菜单</a>
+<a href="{{ url_for('menu.menu_page') }}">返回菜单</a> | <a href="{{ url_for('auth.user_profile') }}">查看我的订单</a>
 {% endblock %}
 
 

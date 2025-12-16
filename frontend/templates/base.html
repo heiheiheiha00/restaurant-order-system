@@ -12,7 +12,13 @@
 		<nav>
 			<a href="{{ url_for('menu.menu_page') }}">菜单</a>
 			<a href="{{ url_for('cart.view_cart') }}">购物车{% if cart_count %} ({{ cart_count }}){% endif %}</a>
-			<a href="{{ url_for('admin.orders_list') }}">商家后台</a>
+			{% if current_user %}
+			<a href="{{ url_for('auth.user_profile') }}">个人中心</a>
+			<a href="{{ url_for('auth.user_logout') }}">退出 ({{ current_user.username }})</a>
+			{% else %}
+			<a href="{{ url_for('auth.user_login_view') }}">用户登录</a>
+			<a href="{{ url_for('auth.user_register_view') }}">注册</a>
+			{% endif %}
 		</nav>
 	</header>
 	<main>

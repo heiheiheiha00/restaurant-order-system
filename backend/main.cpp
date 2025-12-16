@@ -7,8 +7,10 @@
 #include "controllers/MenuController.h"
 #include "controllers/OrderController.h"
 #include "controllers/AdminController.h"
+#include "controllers/AuthController.h"
 #include "services/MenuService.h"
 #include "services/OrderService.h"
+#include "services/AuthService.h"
 #include "database/Database.h"
 #include "models/Dish.h"
 #include "models/Order.h"
@@ -40,9 +42,11 @@ int main() {
 	// Register routes via controllers/services
 	MenuService menuService;
 	OrderService orderService;
+	AuthService authService;
+	registerAuthRoutes(server, authService);
 	registerMenuRoutes(server, menuService);
-	registerOrderRoutes(server, orderService);
-	registerAdminRoutes(server, orderService);
+	registerOrderRoutes(server, orderService, authService);
+	registerAdminRoutes(server, orderService, menuService, authService);
 
 	// 404 handler
 	server.set_error_handler([](const httplib::Request& req, httplib::Response& res) {

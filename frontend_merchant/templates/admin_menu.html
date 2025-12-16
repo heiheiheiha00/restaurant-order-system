@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}菜单管理{% endblock %}
+{% block content %}
+<div class="admin-container">
+	<h2>菜单管理</h2>
+
+	<section class="card">
+		<h3>新增菜品</h3>
+		<form method="post" action="{{ url_for('admin.add_menu_item') }}" class="form-grid">
+			<label>名称
+				<input type="text" name="name" required>
+			</label>
+			<label>分类
+				<input type="text" name="category" placeholder="如：主食 / 饮品">
+			</label>
+			<label>价格
+				<input type="number" name="price" min="0" step="0.01" required>
+			</label>
+			<label>描述
+				<textarea name="description" rows="2" placeholder="可选"></textarea>
+			</label>
+			<label class="checkbox">
+				<input type="checkbox" name="is_available" checked> 上架
+			</label>
+			<button type="submit" class="btn btn-primary">创建菜品</button>
+		</form>
+	</section>
+
+	<section class="card">
+		<h3>现有菜品</h3>
+		{% if not menu %}
+		<p>暂无菜品，先添加一个吧。</p>
+		{% else %}
+		<table class="table">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>名称</th>
+					<th>分类</th>
+					<th>价格</th>
+					<th>状态</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for dish in menu %}
+				<tr>
+					<td>{{ dish.id }}</td>
+					<td>{{ dish.name }}</td>
+					<td>{{ dish.category or '-' }}</td>
+					<td>¥ {{ "%.2f"|format(dish.price) }}</td>
+					<td>
+						{% if dish.isAvailable %}
+						<span class="badge badge-success">上架</span>
+						{% else %}
+						<span class="badge">下架</span>
+						{% endif %}
+					</td>
+					<td>
+						<form method="post" action="{{ url_for('admin.update_menu_item', dish_id=dish.id) }}" class="inline-form">
+							<input type="text" name="name" placeholder="新名称">
+							<input type="text" name="category" placeholder="新分类">
+							<input type="number" step="0.01" name="price" placeholder="新价格">
+							<label>上下架
+								<select name="is_available_choice">
+									<option value="">保持不变</option>
+									<option value="true" {% if dish.isAvailable %}selected{% endif %}>上架</option>
+									<option value="false" {% if not dish.isAvailable %}selected{% endif %}>下架</option>
+								</select>
+							</label>
+							<button type="submit" class="btn btn-secondary">更新</button>
+						</form>
+					</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		{% endif %}
+	</section>
+</div>
+{% endblock %}
+

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}用户登录{% endblock %}
+{% block content %}
+<div class="auth-card">
+	<h2>用户登录</h2>
+	<form method="post" class="form-vertical">
+		{% if next_url %}<input type="hidden" name="next" value="{{ next_url }}">{% endif %}
+		<label>账号（8位字母+数字）
+			<input type="text" name="username" value="{{ username or '' }}" required>
+		</label>
+		<label>密码
+			<input type="password" name="password" required>
+		</label>
+		<button type="submit" class="btn btn-primary">登录</button>
+	</form>
+	<p>还没有账号？<a href="{{ url_for('auth.user_register_view', next=next_url) }}">立即注册</a></p>
+</div>
+{% endblock %}
+

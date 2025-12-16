@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}个人中心{% endblock %}
+{% block content %}
+<section class="profile-header">
+	<h2>个人中心</h2>
+	<p>当前账号：{{ user.username }}</p>
+</section>
+
+<section class="profile-orders">
+	<h3>我的订单</h3>
+	{% if not orders %}
+	<p>还没有下过订单，快去菜单页挑选喜欢的菜品吧！</p>
+	{% else %}
+	{% for order in orders %}
+	<div class="order-card">
+		<div class="order-header">
+			<div>
+				<strong>订单 #{{ order.id }}</strong>
+				<span class="order-status status-{{ order.status }}">{{ order.status }}</span>
+			</div>
+			<small>金额：¥ {{ "%.2f"|format(order.total) }}</small>
+		</div>
+		<div class="order-items">
+			<ul>
+				{% for it in order["items"] %}
+				<li>菜品 #{{ it.dishId }} × {{ it.quantity }} <span>¥ {{ "%.2f"|format(it.unitPrice * it.quantity) }}</span></li>
+				{% endfor %}
+			</ul>
+		</div>
+		<div class="order-footer">
+			{% if order.pickupReady %}
+			<form method="post" action="{{ url_for('auth.ack_pickup', order_id=order.id) }}">
+				<button type="submit" class="btn btn-success">我已收到取餐提醒</button>
+			</form>
+			{% elif order.status == 'completed' %}
+			<span class="badge badge-success">已完成</span>
+			{% else %}
+			<span class="badge">等待更新...</span>
+			{% endif %}
+		</div>
+	</div>
+	{% endfor %}
+	{% endif %}
+</section>
+{% endblock %}
+

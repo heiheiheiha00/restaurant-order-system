@@ -14,7 +14,14 @@ void registerMenuRoutes(httplib::Server& server, MenuService& menuService) {
 		}
 		json arr = json::array();
 		for (const auto& d : menu) {
-			arr.push_back({{"id", d.id}, {"name", d.name}, {"price", d.price}});
+			if (!d.isAvailable) continue;
+			arr.push_back({
+				{"id", d.id},
+				{"name", d.name},
+				{"description", d.description},
+				{"category", d.category},
+				{"price", d.price}
+			});
 		}
 		res.set_content(arr.dump(), "application/json");
 	});

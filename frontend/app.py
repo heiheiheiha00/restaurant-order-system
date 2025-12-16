@@ -2,7 +2,7 @@ from flask import Flask, session
 from routes.menu_routes import menu_bp
 from routes.order_routes import order_bp
 from routes.cart_routes import cart_bp
-from routes.admin_routes import admin_bp
+from routes.auth_routes import auth_bp
 from config import Config
 
 
@@ -13,12 +13,15 @@ def create_app():
 	app.register_blueprint(menu_bp)
 	app.register_blueprint(order_bp)
 	app.register_blueprint(cart_bp)
-	app.register_blueprint(admin_bp)
+	app.register_blueprint(auth_bp)
 
 	@app.context_processor
-	def inject_cart_count():
+	def inject_globals():
 		cart = session.get("cart", {})
-		return {"cart_count": sum(cart.values())}
+		return {
+			"cart_count": sum(cart.values()),
+			"current_user": session.get("user")
+		}
 
 	return app
 

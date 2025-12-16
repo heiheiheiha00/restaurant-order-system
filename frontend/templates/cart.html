@@ -37,6 +37,9 @@
 <form action="{{ url_for('order.create') }}" method="post" class="inline-form">
 	<button type="submit" class="primary">提交订单</button>
 </form>
+{% if not current_user %}
+<p style="margin-top:12px;">提示：下单前请先 <a href="{{ url_for('auth.user_login_view', next=url_for('cart.view_cart')) }}">登录</a> 或 <a href="{{ url_for('auth.user_register_view', next=url_for('cart.view_cart')) }}">注册</a>。</p>
+{% endif %}
 {% else %}
 <p>购物车为空，快去挑选美食吧！</p>
 {% endif %}

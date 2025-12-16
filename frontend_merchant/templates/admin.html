@@ -1,10 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}商家后台 - 订单管理{% endblock %}
+{% block title %}订单管理{% endblock %}
 
 {% block content %}
 <div class="admin-container">
-	<h2>订单管理</h2>
+	<div class="order-header" style="border:none; padding-bottom:0; margin-bottom:8px;">
+		<h2>订单管理</h2>
+	</div>
 	
 	<div class="status-tabs">
 		<button class="tab-btn active" onclick="showStatus('all')">全部</button>
@@ -89,7 +91,6 @@
 
 <script>
 function showStatus(status) {
-	// Update tab buttons
 	document.querySelectorAll('.tab-btn').forEach((btn, index) => {
 		btn.classList.remove('active');
 		if ((status === 'all' && index === 0) ||
@@ -100,18 +101,11 @@ function showStatus(status) {
 			btn.classList.add('active');
 		}
 	});
-	
-	// Show/hide status sections
 	document.querySelectorAll('.status-section').forEach(section => {
-		if (status === 'all' || section.dataset.status === status) {
-			section.style.display = 'block';
-		} else {
-			section.style.display = 'none';
-		}
+		section.style.display = (status === 'all' || section.dataset.status === status) ? 'block' : 'none';
 	});
 }
 
-// Auto-refresh every 10 seconds
 setInterval(() => {
 	location.reload();
 }, 10000);

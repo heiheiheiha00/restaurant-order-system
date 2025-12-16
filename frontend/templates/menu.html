@@ -7,6 +7,8 @@
 	<tr>
 		<th>ID</th>
 		<th>菜品</th>
+		<th>分类</th>
+		<th>描述</th>
 		<th>价格</th>
 		<th>操作</th>
 	</tr>
@@ -16,6 +18,8 @@
 	<tr>
 		<td>{{ d.id }}</td>
 		<td>{{ d.name }}</td>
+		<td>{{ d.category or '-' }}</td>
+		<td>{{ d.description or '-' }}</td>
 		<td>¥ {{ "%.2f"|format(d.price) }}</td>
 		<td>
 			<form action="{{ url_for('cart.add_to_cart') }}" method="post" class="inline-form">

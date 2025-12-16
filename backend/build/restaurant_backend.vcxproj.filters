@@ -16,6 +16,9 @@
     <ClCompile Include="E:\restaurant-order-system\backend\services\OrderService.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="E:\restaurant-order-system\backend\services\AuthService.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="E:\restaurant-order-system\backend\controllers\MenuController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -23,6 +26,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="E:\restaurant-order-system\backend\controllers\AdminController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\restaurant-order-system\backend\controllers\AuthController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

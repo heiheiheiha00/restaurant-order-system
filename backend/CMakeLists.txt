@@ -24,9 +24,11 @@ add_executable(restaurant_backend
 		database/Database.cpp
 		services/MenuService.cpp
 		services/OrderService.cpp
+		services/AuthService.cpp
 		controllers/MenuController.cpp
 		controllers/OrderController.cpp
 		controllers/AdminController.cpp
+		controllers/AuthController.cpp
 )
 
 target_link_libraries(restaurant_backend PRIVATE

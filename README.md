@@ -78,25 +78,61 @@ Invoke-WebRequest -Uri http://127.0.0.1:8081/orders -Method POST -ContentType "a
 
 后端默认使用 `DB_PATH` 指定的 SQLite 文件（缺省为当前目录 `restaurant.db`）。确保提前执行 `schema.sql` 与 `init_data.sql` 初始化数据。
 
-## 前端（Flask）
-目录：`frontend/`
+### 新增接口（用户/商家分离）
+- `POST /auth/user/register`：用户注册（8 位数字+字母账号），body：`username`、`password`、`phone`。
+- `POST /auth/user/login`：用户登录，返回 `token`。
+- `POST /auth/merchant/register`、`/auth/merchant/login`：商家注册/登录。
+- `POST /orders`：用户下单，需携带 `Authorization: Bearer <token>`。
+- `GET /me/orders`：用户个人中心订单列表，返回 `pickupReady` 字段提示待取餐订单。
+- `POST /orders/{id}/pickup-ack`：用户确认收到取餐提醒。
+- `GET /admin/orders`、`PATCH /admin/orders/{id}/status`：商家后台查看/更新订单，需商家 Token。
+- `GET /admin/menu`：加载完整菜单（含上下架信息）。
+- `POST /admin/menu`、`PATCH /admin/menu/{id}`：商家新增菜品或更新分类/价格/上下架。
 
-安装依赖：
+> 所有需要登录的接口均使用 `Authorization: Bearer <token>`；Token 通过 `/auth/.../login` 获取，当前默认 24 小时有效。
+
+完整的接口说明与角色区分见 `docs/desktop-app-plan.md`。
+
+## 前端（Flask）
+
+### 用户端（`frontend/`，默认端口 8080）
 ```powershell
 cd frontend
 python -m venv .venv
 .venv\Scripts\activate
 pip install -r requirements.txt
-```
 
-运行前端服务（默认 127.0.0.1:8080）：
-```powershell
 set BACKEND_BASE_URL=http://127.0.0.1:8081
 set FRONTEND_HOST=127.0.0.1
 set FRONTEND_PORT=8080
 set SECRET_KEY=change-me
-python app.py
+python app.py    # 或 python start_with_backend.py
 ```
+主要页面：
+- `/` 菜单 / `/cart` 购物车
+- `/login` / `/register` 用户登录注册
+- `/profile` 个人中心，查看订单、确认取餐
+- `/order/<id>` 单个订单详情
+
+### 商家端（`frontend_merchant/`，默认端口 8090）
+```powershell
+cd frontend_merchant
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+
+set BACKEND_BASE_URL=http://127.0.0.1:8081
+set FRONTEND_HOST=127.0.0.1
+set FRONTEND_PORT=8090
+set SECRET_KEY=change-me
+python app.py    # 或 python start_with_backend.py
+```
+主要页面：
+- `/merchant/login` / `/merchant/register` 商家认证
+- `/admin/orders` 订单看板
+- `/admin/menu/manage` 菜单维护（增改、上下架）
+
+> 两个前端共享同一个后端和数据库，可同时运行；只需确保它们绑定不同端口（默认 8080 与 8090）。桌面应用也已分别指向对应端口。
 
 ## 启动和使用
 
@@ -112,66 +148,31 @@ python app.py
    ```
    看到 `Starting backend at http://127.0.0.1:8081` 表示启动成功。
 
-2. **启动前端服务**（两种方式）：
+2. **启动前端服务**：
 
-   **方式1：自动启动后端（推荐）**：
-   ```powershell
-   cd frontend
-   set BACKEND_BASE_URL=http://127.0.0.1:8081
-   set FRONTEND_HOST=127.0.0.1
-   set FRONTEND_PORT=8080
-   set SECRET_KEY=change-me
-   python start_with_backend.py
-   ```
-   这个脚本会自动启动后端服务，然后启动前端。停止前端时也会自动停止后端。
+   - 用户端：
+     ```powershell
+     cd frontend
+     python start_with_backend.py   # 或 python app.py（需先手动启动后端）
+     ```
+     访问 `http://127.0.0.1:8080`
 
-   **方式2：手动启动后端后，再启动前端**：
-   ```powershell
-   cd frontend
-   set BACKEND_BASE_URL=http://127.0.0.1:8081
-   set FRONTEND_HOST=127.0.0.1
-   set FRONTEND_PORT=8080
-   set SECRET_KEY=change-me
-   python app.py
-   ```
-   看到 `Running on http://127.0.0.1:8080` 表示启动成功。
+   - 商家端：
+     ```powershell
+     cd frontend_merchant
+     python start_with_backend.py   # 或 python app.py
+     ```
+     访问 `http://127.0.0.1:8090/admin/orders`
 
 ### 客户端使用（顾客）
+1. 访问 `http://127.0.0.1:8080`
+2. 注册/登录 → 浏览菜单 → 加入购物车 → 提交订单
+3. 打开“个人中心”查看全部订单，完成后可点击“我已收到取餐提醒”
 
-访问地址：`http://127.0.0.1:8080`
-
-功能页面：
-- **首页** (`/`)：浏览菜单，将菜品加入购物车
-- **购物车** (`/cart`)：查看购物车、调整数量、清空或提交订单
-- **订单状态** (`/order/<id>`)：查看已提交订单的状态和详情
-
-使用流程：
-1. 打开浏览器访问 `http://127.0.0.1:8080`
-2. 浏览菜单，点击"加入购物车"
-3. 进入购物车页面，确认订单后点击"提交订单"
-4. 查看订单状态页面，了解订单处理进度
-
-### 商家端使用（管理员）
-
-**重要：请访问前端地址，不是后端地址！**
-
-访问地址：`http://127.0.0.1:8080/admin/orders` ✅（前端地址，端口 8080）
-
-❌ 错误：`http://127.0.0.1:8081/admin/orders`（这是后端地址，不能直接访问）
-
-功能页面：
-- **订单管理** (`/admin/orders`)：查看所有订单，按状态分类显示，更新订单状态
-
-使用流程：
-1. **确保后端和前端都已启动**（见上方"完整启动流程"）
-2. 打开浏览器访问 `http://127.0.0.1:8080/admin/orders`（注意是 8080 端口）
-3. 或从导航栏点击"商家后台"链接
-4. 查看订单列表，按状态分类（待处理、制作中、待取餐、已完成）
-5. 点击订单卡片上的操作按钮更新订单状态：
-   - **待处理** → 点击"开始制作" → 状态变为"制作中"
-   - **制作中** → 点击"制作完成" → 状态变为"待取餐"
-   - **待取餐** → 点击"完成订单" → 状态变为"已完成"
-6. 页面每 10 秒自动刷新，实时显示最新订单
+### 商家端使用
+1. 访问 `http://127.0.0.1:8090/merchant/login` 注册/登录
+2. 打开 `http://127.0.0.1:8090/admin/orders` 管理订单，支持状态流转（pending → preparing → ready → completed）
+3. 进入 `http://127.0.0.1:8090/admin/menu/manage` 新增或编辑菜品、上下架
 
 **常见问题排查**：
 
@@ -210,20 +211,32 @@ python app.py
    - 这是正常的，如果没有订单会显示空列表
    - 可以先在客户端下单，然后刷新商家后台查看
 
-**提示**：商家端和客户端使用同一个前端服务，通过不同的 URL 路径访问不同功能。
+**提示**：用户端与商家端已经拆分为两个独立的 Flask 服务（8080 / 8090），互不影响。
 
 ## API 接口
 
-### 顾客端
-- `GET /menu` - 获取菜单
-- `POST /orders` - 创建订单
-- `GET /orders/{id}` - 查询订单详情
+### 认证
+- `POST /auth/user/register`、`POST /auth/user/login`
+- `POST /auth/merchant/register`、`POST /auth/merchant/login`
+
+### 用户端
+- `GET /menu`：只返回上架菜品。
+- `POST /orders`：创建订单（需用户 Token）。
+- `GET /orders/{id}`：查看订单详情（需用户/商家 Token，用户仅能查自己的单）。
+- `GET /me/orders`：个人中心订单列表，附带 `pickupReady` 字段。
+- `POST /orders/{id}/pickup-ack`：确认已收到取餐提醒。
 
 ### 商家端
-- `GET /admin/orders` - 获取所有订单列表
-- `PATCH /admin/orders/{id}/status` - 更新订单状态
+- `GET /admin/orders`：查看全部订单。
+- `PATCH /admin/orders/{id}/status`：更新状态（`pending → preparing → ready → completed`）。
+- `GET /admin/menu`：获取完整菜单（含未上架菜品）。
+- `POST /admin/menu`：新增菜品（含分类、描述、价格、上架状态）。
+- `PATCH /admin/menu/{id}`：更新名称、分类、价格或上下架。
 
-订单状态流转：`pending` → `preparing` → `ready` → `completed`
+## 桌面应用重构计划
+- 目标：将系统打包成“用户端”“商家端”两个桌面应用，开箱即用，自动启动后端并内置登录/个人中心/菜单维护。
+- 设计说明与实施步骤详见 `docs/desktop-app-plan.md`。
+- 桌面壳将复用新的认证/角色接口，并在后续迭代中提供一键启动、托盘提醒、自动更新等能力。
 
 ## 开发路线
 当前版本已完成：

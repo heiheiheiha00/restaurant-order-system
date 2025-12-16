@@ -410,9 +410,11 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="E:\restaurant-order-system\backend\database\Database.cpp" />
     <ClCompile Include="E:\restaurant-order-system\backend\services\MenuService.cpp" />
     <ClCompile Include="E:\restaurant-order-system\backend\services\OrderService.cpp" />
+    <ClCompile Include="E:\restaurant-order-system\backend\services\AuthService.cpp" />
     <ClCompile Include="E:\restaurant-order-system\backend\controllers\MenuController.cpp" />
     <ClCompile Include="E:\restaurant-order-system\backend\controllers\OrderController.cpp" />
     <ClCompile Include="E:\restaurant-order-system\backend\controllers\AdminController.cpp" />
+    <ClCompile Include="E:\restaurant-order-system\backend\controllers\AuthController.cpp" />
     <Natvis Include="C:\Users\43704\vcpkg\installed\x64-windows\share\nlohmann_json\nlohmann_json.natvis">
     </Natvis>
   </ItemGroup>
